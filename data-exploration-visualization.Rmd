@@ -1,0 +1,40 @@
+---
+title: "Data Exploration And Visualization"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+```
+
+## Read the data
+
+```{r}
+data <- read.csv('./data/PS_20230404203710_1288618611/PS_20230404203710_1288618611_rawLog.csv', nrows=250000)
+```
+
+## Exploratory analysis
+
+#### Graph of what action are tagged as isFraud
+
+```{r}
+ggplot(data, aes(x=action, y=isFraud, fill=action)) + 
+  geom_bar(stat = "identity")
+```
+#### Histogram of amounts tagged as frauds
+
+```{r}
+ggplot(data[data$isFraud==1,], aes(x=amount)) + 
+  geom_histogram(bins = 10)
+```
+#### Top recepients accounts tagged as fraud based on amount
+
+```{r}
+fraud_data <- data[data$isFraud==1,]
+ordered_data <- fraud_data[order(fraud_data$amount),]
+ordered_data
+
+ggplot(tail(ordered_data, 10), aes(x=nameDest, y=amount, fill=nameDest)) + 
+  coord_flip() +
+  geom_bar(stat = "identity", ) 
+```
